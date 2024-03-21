@@ -1,5 +1,14 @@
 import BuyButton from "@/components/BuyButton";
 import Transactions from "@/components/Transactions";
+import {
+	Table,
+	TableBody,
+	TableCaption,
+	TableCell,
+	TableHead,
+	TableHeader,
+	TableRow,
+} from "@/components/ui/table";
 
 async function getData() {
 	const res = await fetch("https://api.coincap.io/v2/assets");
@@ -29,22 +38,44 @@ export default async function Home() {
 		<main className="flex min-h-screen flex-col items-center justify-between p-24 gap-16">
 			<Transactions api={data} />
 			<div className="w-full">
-				<ul>
-					{data.map((crypto: crypto) => (
-						<li key={crypto.id} className="space-x-12">
-							<span>{crypto.symbol}</span>
-							<span>{crypto.name}</span>
-							<span>
-								{Number(crypto.priceUsd).toLocaleString("fi-FI", {
-									style: "currency",
-									currency: "USD",
-								})}
-							</span>
-							<span>{Number(crypto.changePercent24Hr).toFixed(2)}%</span>
-							<BuyButton symbol={crypto.symbol} price={crypto.priceUsd} />
-						</li>
-					))}
-				</ul>
+				<h2 className="text-2xl font-semibold pb-2">List</h2>
+				<Table>
+					<TableHeader>
+						<TableRow>
+							<TableHead className="w-[100px]">Symbol</TableHead>
+							<TableHead>Name</TableHead>
+							<TableHead className="text-right">Price</TableHead>
+							<TableHead className="text-right">Change 24Hr</TableHead>
+							<TableHead> </TableHead>
+						</TableRow>
+					</TableHeader>
+					<TableBody>
+						{data.map((crypto: crypto) => (
+							<TableRow key={crypto.id}>
+								<TableCell>{crypto.symbol}</TableCell>
+								<TableCell>{crypto.name}</TableCell>
+								<TableCell className="text-right">
+									{Number(crypto.priceUsd).toLocaleString("fi-FI", {
+										style: "currency",
+										currency: "USD",
+									})}
+								</TableCell>
+								<TableCell
+									className={
+										Number(crypto.changePercent24Hr) > 0
+											? "text-green-400 text-right"
+											: "text-red-400 text-right"
+									}
+								>
+									{Number(crypto.changePercent24Hr).toFixed(2)}%
+								</TableCell>
+								<TableCell className="text-right">
+									<BuyButton symbol={crypto.symbol} price={crypto.priceUsd} />
+								</TableCell>
+							</TableRow>
+						))}
+					</TableBody>
+				</Table>
 			</div>
 		</main>
 	);
