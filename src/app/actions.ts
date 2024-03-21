@@ -13,3 +13,8 @@ export async function addTransaction(
     [count, symbol, Number.parseFloat(price)]
   )
 }
+
+export async function getTransactions() {
+  const res = await db("SELECT * FROM transactions")
+  return res.rows
+}
